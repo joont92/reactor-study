@@ -1,0 +1,88 @@
+package toby;
+
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Flow;
+
+@Slf4j
+public class SchedulerExample {
+    public static void main(String[] args) {
+
+        Flow.Publisher<Integer> pub = sub -> sub.onSubscribe(new Flow.Subscription() {
+            @Override
+            public void request(long n) {
+                log.debug("request");
+                sub.onNext(1);
+                sub.onNext(2);
+                sub.onNext(3);
+                sub.onNext(4);
+                sub.onNext(5);
+                sub.onComplete();
+            }
+
+            @Override
+            public void cancel() {
+
+            }
+        });
+
+        // pub + sub 다른 쓰레드에서 처리
+        Flow.Publisher<Integer> subOnPub = sub -> {
+            var es = Executors.newSingleThreadExecutor();
+            es.execute(() -> pub.subscribe(sub));
+        };
+
+        // sub만 다른 쓰레드에서 처리
+        Flow.Publisher<Integer> pubOnPub = sub -> subOnPub.subscribe(new Flow.Subscriber<>() {
+            // 멀티 쓰레드로 처리하면 안된다
+            ExecutorService es = Executors.newSingleThreadExecutor();
+
+            @Override
+            public void onSubscribe(Flow.Subscription subscription) {
+                sub.onSubscribe(subscription);
+            }
+
+            @Override
+            public void onNext(Integer item) {
+                es.execute(() -> sub.onNext(item));
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                es.execute(() -> sub.onError(throwable));
+            }
+
+            @Override
+            public void onComplete() {
+                es.execute(sub::onComplete);
+            }
+        });
+
+        pubOnPub.subscribe(new Flow.Subscriber<>() {
+            @Override
+            public void onSubscribe(Flow.Subscription subscription) {
+                log.debug("onSubscribe");
+                subscription.request(Long.MAX_VALUE);
+            }
+
+            @Override
+            public void onNext(Integer item) {
+                log.debug("onNext {}", item);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                log.debug("onError {}", throwable.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+                log.debug("onComplete");
+            }
+        });
+
+        log.debug("EXIT");
+    }
+}
