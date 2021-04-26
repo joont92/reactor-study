@@ -31,7 +31,29 @@ public class SchedulerExample {
         // pub + sub 다른 쓰레드에서 처리
         Flow.Publisher<Integer> subOnPub = sub -> {
             var es = Executors.newSingleThreadExecutor();
-            es.execute(() -> pub.subscribe(sub));
+            es.execute(() -> pub.subscribe(new Flow.Subscriber<>() {
+                @Override
+                public void onSubscribe(Flow.Subscription subscription) {
+                    sub.onSubscribe(subscription);
+                }
+
+                @Override
+                public void onNext(Integer item) {
+                    sub.onNext(item);
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    sub.onError(throwable);
+                    es.shutdown();
+                }
+
+                @Override
+                public void onComplete() {
+                    sub.onComplete();
+                    es.shutdown();
+                }
+            }));
         };
 
         // sub만 다른 쓰레드에서 처리
@@ -52,11 +74,13 @@ public class SchedulerExample {
             @Override
             public void onError(Throwable throwable) {
                 es.execute(() -> sub.onError(throwable));
+                es.shutdown();
             }
 
             @Override
             public void onComplete() {
                 es.execute(sub::onComplete);
+                es.shutdown();
             }
         });
 
