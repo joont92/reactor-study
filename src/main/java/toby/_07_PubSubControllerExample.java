@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.concurrent.Flow;
 
 @SpringBootApplication
-public class PubSubControllerExample {
+public class _07_PubSubControllerExample {
     public static void main(String[] args) {
-        SpringApplication.run(PubSubControllerExample.class, args);
+        SpringApplication.run(_07_PubSubControllerExample.class, args);
     }
 
     @RestController

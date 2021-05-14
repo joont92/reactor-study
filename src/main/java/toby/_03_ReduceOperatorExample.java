@@ -1,28 +1,26 @@
 package toby;
 
 import java.util.concurrent.Flow;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class MapOperatorExample {
+public class _03_ReduceOperatorExample {
     public static void main(String[] args) {
         var pub1 = iterPub(Stream.iterate(1, i -> i + 1).limit(10).collect(Collectors.toList()));
-        var mapPub1_1 = mapPub(pub1, i -> i * 10);
-        var mapPub1_2 = mapPub(mapPub1_1, i -> -i);
-        mapPub1_2.subscribe(logSub());
+        var reducePub1 = reducePub(pub1, 0, (a, b) -> a + b);
+        reducePub1.subscribe(logSub());
 
         var pub2 = iterPub(Stream.iterate(1, i -> i + 1).limit(10).collect(Collectors.toList()));
-        var mapPub2_1 = mapPub(pub2, i -> "[" + i + "]");
-        mapPub2_1.subscribe(logSub());
+        var reducePub2 = reducePub(pub2, "", (a, b) -> a + "-" + b);
+        reducePub2.subscribe(logSub());
     }
 
-    // T를 받아서 R로 변환해주는 Operator
-    // 여기 전달하는 Subscriber에게는 R 타입을 돌려주겠다는 의미
-    private static <T, R> Flow.Publisher<R> mapPub(Flow.Publisher<T> pub, Function<T, R> function) {
-        // iterPub.subscribe를 실행하면서 새로 생성한 Subscriber를 던짐
-        // pub.subscribe(new Subscriber(subscriber))
+    private static <T, R> Flow.Publisher<R> reducePub(
+            Flow.Publisher<T> pub, R init, BiFunction<R, T, R> function) {
         return s -> pub.subscribe(new Flow.Subscriber<>() {
+            R result = init;
+
             @Override
             public void onSubscribe(Flow.Subscription subscription) {
                 s.onSubscribe(subscription);
@@ -30,7 +28,7 @@ public class MapOperatorExample {
 
             @Override
             public void onNext(T item) {
-                s.onNext(function.apply(item));
+                result = function.apply(result, item);
             }
 
             @Override
@@ -40,6 +38,7 @@ public class MapOperatorExample {
 
             @Override
             public void onComplete() {
+                s.onNext(result);
                 s.onComplete();
             }
         });

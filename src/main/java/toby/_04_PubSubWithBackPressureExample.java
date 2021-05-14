@@ -3,7 +3,7 @@ package toby;
 import java.util.Arrays;
 import java.util.concurrent.Flow;
 
-public class PubSubExample {
+public class _04_PubSubWithBackPressureExample {
     public static void main(String[] args) {
         var publisher = new PublisherImpl();
         var subscriber = new SubscriberImpl();
@@ -20,11 +20,13 @@ public class PubSubExample {
             subscriber.onSubscribe(new Flow.Subscription() {
                 @Override
                 public void request(long n) {
-                    while (it.hasNext()) {
-                        subscriber.onNext(it.next());
+                    while (n-- > 0) {
+                        if (it.hasNext()) {
+                            subscriber.onNext(it.next());
+                        } else {
+                            subscriber.onComplete();
+                        }
                     }
-
-                    subscriber.onComplete();
                 }
 
                 @Override
@@ -36,15 +38,20 @@ public class PubSubExample {
     }
 
     static class SubscriberImpl implements Flow.Subscriber<Integer> {
+        Flow.Subscription ss;
+
         @Override
         public void onSubscribe(Flow.Subscription subscription) {
             System.out.println("on subscribe");
-            subscription.request(Long.MAX_VALUE);
+            ss = subscription;
+            ss.request(1);
         }
 
         @Override
         public void onNext(Integer item) {
             System.out.println("on next " + item);
+            // 1개 받고 다시 1개 요청
+            ss.request(1);
         }
 
         @Override

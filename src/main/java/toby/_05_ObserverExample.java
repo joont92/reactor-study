@@ -7,7 +7,7 @@ import java.util.concurrent.Executors;
 /**
  * 연결된 observer 들에게 한번에 데이터를 push 할 수 있는 나름 강력한 패턴
  */
-public class ObserverExample {
+public class _05_ObserverExample {
     public static void main(String[] args) {
         var ob = new Observer() {
             @Override

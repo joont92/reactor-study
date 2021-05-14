@@ -1,13 +1,14 @@
 package toby;
 
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Flux;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.Flow;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class IntervalEx {
+public class _09_IntervalEx {
     public static void main(String[] args) {
         Flow.Publisher<Integer> pub = sub -> sub.onSubscribe(new Flow.Subscription() {
             boolean canceled = false;
@@ -35,7 +36,7 @@ public class IntervalEx {
             int count = 1;
             @Override
             public void onSubscribe(Flow.Subscription subscription) {
-                log.debug("onSubscribe");
+                log.info("onSubscribe");
                 s = subscription;
                 subscription.request(Long.MAX_VALUE);
             }
@@ -46,17 +47,17 @@ public class IntervalEx {
                     s.cancel();
                     return;
                 }
-                log.debug("onNext {}", item);
+                log.info("onNext {}", item);
             }
 
             @Override
             public void onError(Throwable throwable) {
-                log.debug("onError {}", throwable);
+                log.info("onError {}", throwable);
             }
 
             @Override
             public void onComplete() {
-                log.debug("onComplete");
+                log.info("onComplete");
             }
         };
 

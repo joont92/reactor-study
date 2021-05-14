@@ -2,7 +2,7 @@ package toby;
 
 import reactor.core.publisher.Flux;
 
-public class ReactorExample {
+public class _06_ReactorExample {
     public static void main(String[] args) {
         Flux.<Integer>create(e -> {
             e.next(1);

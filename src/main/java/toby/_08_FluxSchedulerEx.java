@@ -6,12 +6,15 @@ import reactor.core.scheduler.Schedulers;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-public class FluxSchedulerEx {
+public class _08_FluxSchedulerEx {
     public static void main(String[] args) {
-//        pubsubOn();
-        interval();
+        pubsubOn();
+//        interval();
     }
 
+    /*
+    consumer도 single thread를 써야한다(순서보장)
+     */
     private static void pubsubOn() {
         Flux.range(1, 10)
                 .publishOn(Schedulers.newSingle("pub")) // consumer가 느릴 경우 사용

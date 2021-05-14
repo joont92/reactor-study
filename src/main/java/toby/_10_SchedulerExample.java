@@ -7,13 +7,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Flow;
 
 @Slf4j
-public class SchedulerExample {
+public class _10_SchedulerExample {
     public static void main(String[] args) {
 
         Flow.Publisher<Integer> pub = sub -> sub.onSubscribe(new Flow.Subscription() {
             @Override
             public void request(long n) {
-                log.debug("request");
+                log.info("request");
                 sub.onNext(1);
                 sub.onNext(2);
                 sub.onNext(3);
@@ -30,7 +30,7 @@ public class SchedulerExample {
 
         // pub + sub 다른 쓰레드에서 처리
         Flow.Publisher<Integer> subOnPub = sub -> {
-            var es = Executors.newSingleThreadExecutor();
+            var es = Executors.newFixedThreadPool(100);
             es.execute(() -> pub.subscribe(new Flow.Subscriber<>() {
                 @Override
                 public void onSubscribe(Flow.Subscription subscription) {
@@ -87,26 +87,26 @@ public class SchedulerExample {
         pubOnPub.subscribe(new Flow.Subscriber<>() {
             @Override
             public void onSubscribe(Flow.Subscription subscription) {
-                log.debug("onSubscribe");
+                log.info("onSubscribe");
                 subscription.request(Long.MAX_VALUE);
             }
 
             @Override
             public void onNext(Integer item) {
-                log.debug("onNext {}", item);
+                log.info("onNext {}", item);
             }
 
             @Override
             public void onError(Throwable throwable) {
-                log.debug("onError {}", throwable.getMessage());
+                log.info("onError {}", throwable.getMessage());
             }
 
             @Override
             public void onComplete() {
-                log.debug("onComplete");
+                log.info("onComplete");
             }
         });
 
-        log.debug("EXIT");
+        log.info("EXIT");
     }
 }

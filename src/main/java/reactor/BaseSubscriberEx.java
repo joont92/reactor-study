@@ -22,23 +22,23 @@ public class BaseSubscriberEx {
                 .subscribe(new Subscriber<>() {
                     @Override
                     public void onSubscribe(Subscription s) {
-                        log.debug("onSubscribe");
+                        log.info("onSubscribe");
                         s.request(Long.MAX_VALUE);
                     }
 
                     @Override
                     public void onNext(List<Integer> integers) {
-                        log.debug("onNext " + integers.stream().map(String::valueOf).collect(Collectors.joining(", ")));
+                        log.info("onNext " + integers.stream().map(String::valueOf).collect(Collectors.joining(", ")));
                     }
 
                     @Override
                     public void onError(Throwable t) {
-                        log.debug("onError");
+                        log.info("onError");
                     }
 
                     @Override
                     public void onComplete() {
-                        log.debug("onComplete");
+                        log.info("onComplete");
                     }
                 });
     }
@@ -46,7 +46,7 @@ public class BaseSubscriberEx {
     public static class SampleSubscriber extends BaseSubscriber<Integer> {
         @Override
         protected void hookOnSubscribe(Subscription subscription) {
-            log.debug("onSubscribe");
+            log.info("onSubscribe");
             request(1);
 //            requestUnbounded();
 //            cancel();
@@ -54,18 +54,18 @@ public class BaseSubscriberEx {
 
         @Override
         protected void hookOnNext(Integer value) {
-            log.debug("onNext " + value);
+            log.info("onNext " + value);
             request(1);
         }
 
         @Override
         protected void hookOnComplete() {
-            log.debug("onComplete");
+            log.info("onComplete");
         }
 
         @Override
         protected void hookFinally(SignalType type) {
-            log.debug("onFinally {}", type);
+            log.info("onFinally {}", type);
         }
     }
 }

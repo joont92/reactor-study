@@ -3,6 +3,7 @@ package reactor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.SynchronousSink;
 
 @Slf4j
 public class MonoFluxEx {
@@ -10,16 +11,16 @@ public class MonoFluxEx {
         var just = Flux.just(1,2,3,4,5);
         var range = Flux.range(1, 10);
         var fromArray = Flux.fromArray(new Integer[]{1,2,3,4,5});
-        just.subscribe(i -> log.debug(String.valueOf(i)));
+        just.subscribe(i -> log.info(String.valueOf(i)));
         System.out.println();
-        range.subscribe(i -> log.debug(String.valueOf(i)));
+        range.subscribe(i -> log.info(String.valueOf(i)));
         System.out.println();
-        fromArray.subscribe(i -> log.debug(String.valueOf(i)));
+        fromArray.subscribe(i -> log.info(String.valueOf(i)));
         System.out.println();
 
         var ints = Flux.range(1, 5)
                 .map(i -> i * 10);
-        ints.subscribe(i -> log.debug(String.valueOf(i)));
+        ints.subscribe(i -> log.info(String.valueOf(i)));
         System.out.println();
 
         var intsWithError = Flux.range(1, 5)
@@ -29,13 +30,13 @@ public class MonoFluxEx {
                     }
                     return i;
                 });
-        intsWithError.subscribe(i -> log.debug(String.valueOf(i)), t -> log.error("{}", t));
+        intsWithError.subscribe(i -> log.info(String.valueOf(i)), t -> log.error("{}", t));
         System.out.println();
 
         ints.subscribe(
-                i -> log.debug(String.valueOf(i)),
+                i -> log.info(String.valueOf(i)),
                 Throwable::printStackTrace,
-                () -> log.debug("COMPLETE!"),
+                () -> log.info("COMPLETE!"),
                 s -> s.request(2));
         System.out.println();
 
