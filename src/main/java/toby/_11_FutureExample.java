@@ -12,7 +12,11 @@ public class _11_FutureExample {
         var start = System.currentTimeMillis();
         var es = Executors.newCachedThreadPool();
 
+        // 만약 Thread.sleep이 아니였다면 더 오랜 시간이 걸렸을 것이다
+        // Thread.sleep은 cpu를 사용하지 않고 waiting 상태로 빠지기 때문이다
         var future = es.submit(() -> {
+            // 계속 계산하는 로직이었다면, 이 쓰레드가 다른 cpu에 할당되지 않는다면 결과는 똑같을 듯..
+//            for (long i = 0; i < 1000000000L; i++) { }
             Thread.sleep(2000);
             return "Hello";
         });

@@ -39,6 +39,7 @@ public class _13_SpringAsync {
     ThreadPoolTaskExecutor tp() {
         ThreadPoolTaskExecutor te = new ThreadPoolTaskExecutor();
         /*
+        **자바의 기본적인 쓰레드 풀 동작방식**
         - 첫번쨰 쓰레드 요청이 올 때 core pool size 만큼 쓰레드를 만들어놓는다
         - core pool size 가 꽉 찼을 경우 queue 를 채우게 되고, queue가 꽉 찼을 때 max pool size 만큼 쓰레드 개수를 늘린다
         - 큐 개수를 설정하지 않으면 큐 개수가 무한대로 max pool size가 의미가 없어지게 된다
