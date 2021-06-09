@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import java.util.concurrent.ThreadPoolExecutor;
-
 @SpringBootApplication
 @EnableAsync
 public class _21_AsyncRestTemplateWeb {
@@ -44,6 +42,7 @@ public class _21_AsyncRestTemplateWeb {
             var result = new DeferredResult<String>();
 
             // 사용 쓰레드 총 3개 : netty thread 1개, bean으로 등록한 thread pool 1개, 서블릿 thread 1개
+            // 단점: 비즈니스 로직과 멀티 쓰레드 관련 코드들이 같이 존재한다
             var f1 = restTemplate.getForEntity("http://localhost:8081/service1?req={req}",
                     String.class, "hello " + idx);
             f1.addCallback(s -> {

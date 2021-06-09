@@ -30,7 +30,8 @@ public class _19_CyclicBarrierLoadTest {
 
                 var innerSw = new StopWatch();
                 innerSw.start();
-                var res = rt.getForObject("http://localhost:8080/completion-rest?idx={idx}", String.class, j);
+//                var res = rt.getForObject("http://localhost:8080/deferred-rest?idx={idx}", String.class, j);
+                var res = rt.getForObject("http://localhost:8080/rest?idx={idx}", String.class, j);
                 innerSw.stop();
                 log.info("Elapsed {} : {}", innerSw.getTotalTimeSeconds(), res);
                 return null;

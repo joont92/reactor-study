@@ -21,7 +21,7 @@ repositories {
 dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-web:1.4.7.RELEASE'
-//    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+//    implementation 'org.springframework.boot:spring-boot-starter-webflux:2.0.0.RELEASE'
     implementation 'io.projectreactor:reactor-core:3.0.7.RELEASE'
     implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.3'
     compileOnly 'org.projectlombok:lombok:1.18.2'
