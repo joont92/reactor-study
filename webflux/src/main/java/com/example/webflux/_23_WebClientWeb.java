@@ -5,9 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
-import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -18,12 +16,12 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 @SpringBootApplication
 @RestController
-public class _23_WebfluxWeb {
+public class _23_WebClientWeb {
     public static void main(String[] args) {
         System.setProperty("reactor.ipc.netty.workerCount", "1"); // doesn't work
         System.setProperty("reactor.ipc.netty.pool.maxConnections", "2000");
 
-        SpringApplication.run(_23_WebfluxWeb.class, args);
+        SpringApplication.run(_23_WebClientWeb.class, args);
     }
 
     static final String URL1 = "http://localhost:8081/service1?req={req}";
