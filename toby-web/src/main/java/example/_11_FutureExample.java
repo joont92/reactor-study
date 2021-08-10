@@ -7,7 +7,6 @@ import java.util.concurrent.Executors;
 
 @Slf4j
 public class _11_FutureExample {
-    // 2250~ 보다 덜 걸림
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         var start = System.currentTimeMillis();
         var es = Executors.newCachedThreadPool();
@@ -21,11 +20,12 @@ public class _11_FutureExample {
             return "Hello";
         });
 
-        // takes 260-280 ms
+        // takes 4-500 ms
         for (long i = 0; i < 1000000000L; i++) { }
 
         future.get(); // blocking
         var end = System.currentTimeMillis();
-        log.info(String.valueOf(end - start));
+        log.info(String.valueOf(end - start)); // 2010ms 정도 소요(2500ms 보다 덜 걸림)
+        es.shutdown();
     }
 }
